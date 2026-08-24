@@ -32,19 +32,21 @@ const PersonalDetailsScreen: React.FC = () => {
       if (user) {
         const { data } = await supabase
           .from('profiles')
-          .select('full_name, phone, date_of_birth, address, member_status')
+          .select('full_name, phone')
           .eq('user_id', user.id)
           .maybeSingle();
 
-        if (data) {
-          setFormData({
-            full_name: data.full_name || '',
-            phone: data.phone || '',
-            date_of_birth: data.date_of_birth || '',
-            address: data.address || '',
-            member_status: data.member_status || 'Gold',
-          });
-        }
+        const savedDob = localStorage.getItem(`dob_${user.id}`) || '';
+        const savedAddress = localStorage.getItem(`address_${user.id}`) || '';
+        const savedMemberStatus = localStorage.getItem(`member_status_${user.id}`) || 'Gold';
+
+        setFormData({
+          full_name: data?.full_name || '',
+          phone: data?.phone || '',
+          date_of_birth: savedDob,
+          address: savedAddress,
+          member_status: savedMemberStatus,
+        });
       }
     };
 
@@ -56,14 +58,16 @@ const PersonalDetailsScreen: React.FC = () => {
 
     setIsLoading(true);
     try {
+      // Save local details to localStorage to bypass database schema limitations
+      localStorage.setItem(`dob_${user.id}`, formData.date_of_birth);
+      localStorage.setItem(`address_${user.id}`, formData.address);
+      localStorage.setItem(`member_status_${user.id}`, formData.member_status);
+
       const { error } = await supabase
         .from('profiles')
         .update({
           full_name: formData.full_name,
           phone: formData.phone,
-          date_of_birth: formData.date_of_birth,
-          address: formData.address,
-          member_status: formData.member_status,
         })
         .eq('user_id', user.id);
 
@@ -77,6 +81,7 @@ const PersonalDetailsScreen: React.FC = () => {
       setIsLoading(false);
     }
   };
+
 
   return (
     <MobileFrame>

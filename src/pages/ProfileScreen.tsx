@@ -53,14 +53,20 @@ const ProfileScreen: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       if (user) {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from('profiles')
-          .select('full_name, phone, member_status')
+          .select('full_name, phone')
           .eq('user_id', user.id)
           .maybeSingle();
 
+        const savedMemberStatus = localStorage.getItem(`member_status_${user.id}`) || 'Gold';
+
         if (data) {
-          setProfile(data as any);
+          setProfile({
+            full_name: data.full_name,
+            phone: data.phone,
+            member_status: savedMemberStatus,
+          });
         }
       }
     };

@@ -9,15 +9,16 @@ const StatusBar: React.FC = () => {
   });
 
   return (
-    <div className="flex justify-between items-center px-6 pt-10 pb-2 text-foreground">
-      <span className="text-sm font-semibold">{time}</span>
-      <div className="flex items-center gap-1.5">
-        <Signal className="w-4 h-4" />
-        <Wifi className="w-4 h-4" />
-        <Battery className="w-5 h-5" />
+    <div className="flex justify-between items-center px-6 pt-9 pb-2 text-[#F5F7FA] select-none pointer-events-none z-50 relative">
+      <span className="text-[13px] font-semibold tracking-tight">{time}</span>
+      <div className="flex items-center gap-1.5 opacity-90">
+        <Signal className="w-4 h-4" strokeWidth={2.2} />
+        <Wifi className="w-4 h-4" strokeWidth={2.2} />
+        <Battery className="w-[18px] h-[18px]" strokeWidth={2.2} />
       </div>
     </div>
   );
 };
 
 export default StatusBar;
+
